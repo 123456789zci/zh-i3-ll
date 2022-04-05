@@ -1,0 +1,132 @@
+#avoid flicker
+background yes
+double_buffer yes
+no_buffers yes
+#own window to run simultanious 2 or more conkys
+own_window yes
+own_window_transparent yes
+own_window_type normal
+own_window_hints undecorate,sticky,skip_taskbar,skip_pager
+
+cpu_avg_samples 2
+net_avg_samples 2
+out_to_console no
+
+
+#borders
+draw_borders no
+#border_margin 1
+#maximum_width 350
+#shades
+draw_shades no
+#draw_graph_borders yes
+#draw_borders yes
+#position
+gap_x 10
+gap_y 55 
+#alignment top_left
+
+#behaviour
+update_interval 1
+
+#colour
+#default_color bfbfbf
+default_color white
+default_shade_color white
+default_outline_color white
+#default_shade_color 000000
+own_window_colour 4c4c4c
+
+#font
+use_xft yes
+xftfont Wenquanyi Bitmap Song:pixelsize=19
+#xftfont VeraSansYuanTi:pixelsize=14
+
+# Force UTF8? note that UTF8 support required XFT
+override_utf8_locale yes
+
+#to prevent window from moving
+use_spacer no
+minimum_size 240  5
+minimum_width 350
+
+#mpd
+mpd_host shaiya
+mpd_port 6600
+# ${offset -22}
+TEXT
+${color green}系统 ${hr 1}
+主机: $alignr$nodename
+内核: $alignr$kernel
+架构:$alignr$machine
+启动时间: $alignr$uptime
+#温度: ${alignr}${acpitemp} °C
+#电池:$alignr${battery_percent BAT0}%
+${color #39e9ff}网络 ${hr 1}
+IP: ${alignr} ${addr enp3s0}
+# enp3s0f1 IP: ${alignr} ${addr enp3s0}
+GateWay: ${alignr} $gw_ip
+${voffset 1}${color #98c2c7} 下载: ${color #ddaa00}${downspeed eth0}/s ${alignr}${color #98c2c7}总共: ${color #ddaa00}${totaldown eth0}
+# ${color #ffa200}${hr 2}
+# curl icanhazip.com
+${color #cddc39}CPU ${hr 1}
+频率: ${alignr}${freq dyn} MHz
+CPU1 ${alignr}${cpu cpu1}%
+${cpubar 4 cpu1}
+CPU2 ${alignr}${cpu cpu2}%
+${cpubar 4 cpu2}
+#${color green}核心状态${hr 1}
+#${color green}Core 1: ${freq_g 1}GHz (${cpu cpu1}%)${color FFF} ${alignr 140}${cpubar cpu1 8}
+#${color green}Core 2: ${freq_g 2}GHz (${cpu cpu2}%)${color FFF} ${alignr 140}${cpubar cpu2 8}
+#${color green}Core 3: ${freq_g 3}GHz (${cpu cpu1}%)${color FFF} ${alignr 140}${cpubar cpu3 8}
+#${color green}Core 4: ${freq_g 4}GHz (${cpu cpu1}%)${color FFF} ${alignr 140}${cpubar cpu4 8}
+${color #16A085}本机内存：$memperc%$alignr$mem/$memmax
+${membar 8}
+硬盘：$fs_used_perc% $alignr${fs_used /}/${fs_size /}
+${fs_bar 8 /}
+# 交换分区:  $swapperc% ${alignr} $swap / $swapmax
+# ${swapbar 8}
+#Disk  I/O: ${alignr}$diskio
+#Root: ${alignr}${fs_free /} / ${fs_size /}
+#${fs_bar 8 /}
+Home: ${alignr}${fs_free /home} / ${fs_size /home}
+${fs_bar 8 /home}
+
+${color #3E50B4}高CPU占用${hr 1} 
+${top name 1}$alignr${top cpu 1}%
+${top name 2}$alignr${top cpu 2}%
+${top name 3}$alignr${top cpu 3}%
+${top name 4}$alignr${top cpu 4}%
+${top name 5}$alignr${top cpu 5}%
+
+${color #ec94fd}高内存占用 ${hr 1}
+${top_mem name 1}$alignr ${top_mem mem 1}%
+${top_mem name 2}$alignr ${top_mem mem 2}%
+${top_mem name 3}$alignr ${top_mem mem 3}%
+${top_mem name 4}$alignr ${top_mem mem 4}%
+
+TEXT
+${voffset -1} 内核: ${color dcff82}${font}${kernel}${color}     开机时间: ${color dcff82}${font}${uptime_short} ${color}
+${voffset -1}
+${voffset -1} CPU使用: ${color dcff82}${font}${cpu}% ${color}${cpubar}
+${voffset -1} 运行进程数: ${color dcff82}${font}${processes} ${color} 活跃进程数: ${color dcff82}${font}${running_processes} ${color}
+${voffset -1} 内存使用: ${color dcff82}$mem/$memmax - $memperc% ${color dcff82}${membar}${color}
+${voffset -1} 交换空间: ${color dcff82}$swap/$swapmax - $swapperc% ${color dcff82}${swapbar}${color}
+${voffset -1} 硬盘 I/O: ${color dcff82}${font}${diskio} ${color}
+${voffset -1} 网络使用: ${color dcff82}${font}${downspeed eth0} Kb/s ${color} ${totaldown eth0} 下行  ${color dcff82}${font}${upspeed eth0} Kb/s ${color} ${totalup eth0} 上行
+${voffset -1} 文件系统: ${color  #dcff82}
+${voffset -1} ${color}/          $color${fs_used /}/${fs_size /} ${color  #dcff82}${fs_bar /}${color}
+${voffset -1} ${color}/home     $color${fs_used /home}/${fs_size /home} ${color  #dcff82}${fs_bar /home}${color}
+${color0}程序:
+${color0}Name              ${alignr}PID     ${alignr}CPU   ${alignr}MEM
+$color1 ${top name 1} ${alignr}${top pid 1}  ${alignr}${top cpu 1}  ${alignr}${top mem 1}
+$color1 ${top name 2} ${alignr}${top pid 2}  ${alignr}${top cpu 2}  ${alignr}${top mem 2}
+$color1 ${top name 3} ${alignr}${top pid 3}  ${alignr}${top cpu 3}  ${alignr}${top mem 3}
+${color0}Mem usage
+$color1 ${top_mem name 1} ${alignr}${top_mem pid 1}  ${alignr}${top_mem cpu 1}  ${alignr}${top_mem mem 1}
+$color1 ${top_mem name 2} ${alignr}${top_mem pid 2}  ${alignr}${top_mem cpu 2}  ${alignr}${top_mem mem 2}
+$color1 ${top_mem name 3} ${alignr}${top_mem pid 3}  ${alignr}${top_mem cpu 3}  ${alignr}${top_mem mem 3}
+${color0}Entropy: ${color4}${entropy_avail}${color0}/${color4}${entropy_poolsize} ${color0}${entropy_bar}
+${color0}Net Down:$color4 ${downspeed wlp3s0} k/s      ${color0}Net Up:$color4 ${upspeed wlp3s0} k/s
+${color0}${downspeedgraph wlp3s0 32,155 104E8B ffff00} $alignr${color0}${upspeedgraph wlp3s0 32,155 104E8B 00ffff
+ 

@@ -1,0 +1,686 @@
+noremap gh ggVG
+noremap [ []<LEFT>
+noremap { {<ENTER><TAB><ENTER>}<up><RIGHT>
+inoremap " ""<LEFT>
+inoremap ' ''<LEFT>
+inoremap (  ()<LEFT>
+inoremap <up> <Nop>
+nnoremap A ^
+nnoremap L $
+nnoremap H J
+noremap F L
+map R :source $MYVIMRC<CR>
+noremap <LEADER>S  viw
+
+noremap Q 5k
+noremap Z 5j 
+noremap b b
+noremap n w
+noremap k a
+noremap K A
+noremap WW gg 
+noremap SS G
+inoremap <c-a> <Left>
+inoremap <c-l> <Right>
+set nu 
+syntax on  
+set nocompatible
+set history=1000
+set autoindent
+set expandtab
+set smartindent
+set tabstop=4
+set shiftwidth=4
+set showmatch
+set guioptions-=T
+set ruler
+set nohls
+set incsearch
+set relativenumber
+set cursorline
+set wrap
+set wildmode=full
+set showcmd
+set wildmenu
+map <left> :vertical resize-5<CR>
+map <right> :vertical resize+5<CR>
+noremap a h
+noremap s j
+noremap w k
+map N :w<CR>
+map M :q<CR>
+let mapleader=";"
+
+set scrolloff=6
+noremap <c-x> : call CompileRungcc()<CR>
+noremap <c-z> : call CompileRunGcc()<CR>
+noremap <c-w> : call Gdb()<CR>
+noremap <c-y> : call GDB()<CR>
+noremap <LEADER>q <c-O>
+
+noremap <F9> :NERDTree<CR>
+noremap qd :set splitright<CR>:vsplit<CR>
+noremap qa :set nosplitright<CR>:vsplit<CR>
+noremap qw :set nosplitbelow<CR>:split<CR>
+noremap qs :set splitbelow<CR>:split<CR>
+map <LEADER>d <c-w>l
+map <LEADER>w <c-w>k
+map <LEADER>a <c-w>h
+map <LEADER>s <c-w>j
+
+
+function Gdb()
+exec "w"
+exec "!gcc -g % -o %<"
+endfunction
+
+function GDB() 
+exec "w"
+set splitbelow
+:term gdb %<
+endfunction
+
+function  CompileRunGcc()
+exec "w"
+if &filetype == 'c'
+		exec "!gcc % -o %<"
+	elseif &filetype == 'cpp'
+		exec "!g++ % -o %<"
+	elseif &filetype == 'java'
+		exec "!javac %"
+		exec "!time java %<"
+	elseif &filetype == 'sh'
+		:!time bash %
+	elseif &filetype == 'python'
+		exec "!time python2.7 %"
+    elseif &filetype == 'html'
+        exec "!firefox % &"
+    elseif &filetype == 'go'
+        exec "!go build %<"
+        exec "!time go run %"
+    elseif &filetype == 'mkd'
+        exec "!~/.vim/markdown.pl % > %.html &"
+        exec "!firefox %.html &"
+	endif
+	
+endfunction
+
+function  CompileRungcc()
+exec "w"
+set splitbelow
+:term ./%< 
+endfunction
+
+
+call plug#begin('~/.vim/plugged')
+Plug 'johnantoni/grb256'
+Plug 'mg979/vim-visual-multi', {'branch': 'master'}
+Plug 'Yggdroot/indentLine'
+Plug 'flazz/vim-colorschemes'
+Plug 'gko/vim-coloresque'
+Plug 'preservim/nerdtree'
+Plug 'jiangmiao/auto-pairs'
+Plug 'preservim/tagbar'
+Plug 'gcmt/wildfire.vim'
+Plug 'kien/rainbow_parentheses.vim'
+Plug 'vimwiki/vimwiki'
+Plug 'junegunn/fzf.vim'
+Plug 'preservim/nerdcommenter'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'haya14busa/incsearch.vim'
+Plug 'vim-scripts/taglist.vim'
+Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
+Plug 'altercation/vim-colors-solarized'
+Plug 'airblade/vim-gitgutter'
+Plug 'easymotion/vim-easymotion'
+Plug 'tpope/vim-surround'
+Plug 'Lokaltog/vim-distinguished'
+Plug   'tpope/vim-vividchalk'
+Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
+Plug 'SirVer/ultisnips'
+Plug 'laggardkernel/ranger-fzf-marks'
+Plug 'honza/vim-snippets'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+call plug#end()
+
+
+
+
+
+
+
+"coc.nvim配置c/c++补全
+set encoding=utf-8
+set updatetime =100
+set shortmess+=c
+set cmdheight=2
+"简化
+set signcolumn=number
+"结合
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+"TAB 管用
+nmap <silent>  <LEADER>1 <Plug>(coc-diagnostic-prev)
+nmap <silent> <LEADER>2 <Plug>(coc-diagnostic-next)
+" 上个或下个代码报错
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+"转到特定位置
+nnoremap <silent> <LEADER>K :call <SID>show_documentation()<CR>
+"打开文档
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+" Remap keys for applying codeAction to the current buffer.
+nmap <leader>ac  <Plug>(coc-codeaction)
+" Apply AutoFix to problem on the current line.
+nmap <leader>qf  <Plug>(coc-fix-current)
+" Use <Ctrl-F> to format documents with prettier
+command! -nargs=0 Prettier :CocCommand prettier.formatFile
+noremap <C-F> :Prettier<CR>
+
+ 
+
+nmap < <Plug>(easymotion-s2)
+"垂直线
+set list lcs=tab:\¦\ 
+let g:indentLine_enabled = 1
+"let g:indentLine_bgcolor_term = 202
+"let g:indentLine_bgcolor_gui = '#FF5F00'
+ let  g:rbpt_colorpairs = [
+    \ ['brown',       'RoyalBlue3'],
+    \ ['Darkblue',    'SeaGreen3'],
+    \ ['darkgray',    'DarkOrchid3'],
+    \ ['darkgreen',   'firebrick3'],
+    \ ['darkcyan',    'RoyalBlue3'],
+    \ ['darkred',     'SeaGreen3'],
+    \ ['darkmagenta', 'DarkOrchid3'],
+    \ ['brown',       'firebrick3'],
+    \ ['gray',        'RoyalBlue3'],
+    \ ['black',       'SeaGreen3'],
+    \ ['darkmagenta', 'DarkOrchid3'],
+    \ ['Darkblue',    'firebrick3'],
+    \ ['darkgreen',   'RoyalBlue3'],
+    \ ['darkcyan',    'SeaGreen3'],
+    \ ['darkred',     'DarkOrchid3'],
+    \ ['red',         'firebrick3'],
+    \ ]
+let g:rbpt_max = 16
+let loaded_matchparen=1
+au VimEnter * RainbowParenthesesToggle
+au Syntax * RainbowParenthesesLoadRound
+au Syntax * RainbowParenthesesLoadSquare
+au Syntax * RainbowParenthesesLoadBraces
+let g:rbpt_loadcmd_toggle = 0
+
+let g:molokai_original = 1
+let g:rehash256 = 1
+
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_theme='bubblegum'
+
+nmap <c-i> :TagbarToggle<CR>
+"ale
+let b:ale_linters =['pylint']
+let b:ale_fixers = ['autopep8','yapf']
+
+
+set ruler
+set  magic 
+set guioptions-=T
+set guioptions-=m
+set fdm=marker
+"zf　创建折叠，比如在marker方式下：
+"        zf56G，创建从当前行起到56行的代码折叠；
+"        10zf或10zf+或zf10↓，创建从当前行起到后10行的代码折叠。
+"        10zf-或zf10↑，创建从当前行起到之前10行的代码折叠。
+"        在括号处zf%，创建从当前行起到对应的匹配的括号上去（（），{}，[]，<>等）。
+"zd  删除 (delete) 在光标下的折叠。仅当 'foldmethod' 设为 "manual" 或 "marker" 时有效。
+"zD  循环删除 (Delete) 光标下的折叠，即嵌套删除折叠。仅当 'foldmethod' 设为 "manual" 或 "marker" 时有效。
+"zE  除去 (Eliminate) 窗口里“所有”的折叠。仅当 'foldmethod' 设为 "manual" 或 "marker" 时有效。
+
+noremap  <c-t> :bo term<CR>
+
+set lazyredraw
+map   t     ysiw 
+
+if has("autocmd")
+  au VimEnter,InsertLeave * silent execute '!echo -ne "\e[2 q"' | redraw!
+  au InsertEnter,InsertChange *
+    \ if v:insertmode == 'i' | 
+    \   silent execute '!echo -ne "\e[6 q"' | redraw! |
+    \ elseif v:insertmode == 'r' |
+    \   silent execute '!echo -ne "\e[4 q"' | redraw! |
+    \ endif
+  au VimLeave * silent execute '!echo -ne "\e[ q"' | redraw!
+endif
+
+
+hi VertSplit term=reverse cterm=reverse gui=none guibg=Grey10 guifg=Black
+filetype plugin on
+
+
+ 
+ let g:airline#extensions#ale#enabled = 1
+"主题配色
+"colorscheme grb256
+colorscheme jellybeans
+
+
+
+
+
+
+
+
+"映射换行
+noremap   [a<TAB>   1k
+noremap   [s<TAB>   2k
+noremap   [d<TAB>   3k
+noremap   [f<TAB>   4k
+noremap   [g<TAB>   5k
+noremap   [h<TAB>   6k
+noremap   [j<TAB>   7k
+noremap   [k<TAB>   8k
+noremap   [l<TAB>   9k
+noremap  [a<LEADER><TAB>  10k
+noremap  [aa<TAB>  11k
+noremap  [as<TAB>  12k
+noremap  [ad<TAB>  13k
+noremap  [af<TAB>  14k
+noremap  [ag<TAB>  15k
+noremap  [ah<TAB>  16k
+noremap  [aj<TAB>  17k
+noremap  [ak<TAB>  18k
+noremap  [al<TAB>  19k
+noremap  [r<LEADER><TAB>  20k
+noremap  [ra<TAB>  21k
+noremap  [rr<TAB>  22k
+noremap  [rs<TAB>  23k
+noremap  [rt<TAB>  24k
+noremap  [rd<TAB>  25k
+noremap  [rh<TAB>  26k
+noremap  [rn<TAB>  27k
+noremap  [re<TAB>  28k
+noremap  [ri<TAB>  29k
+noremap  [so<TAB>  30k
+noremap  [sa<TAB>  31k
+noremap  [sr<TAB>  32k
+noremap  [ss<TAB>  33k
+noremap  [st<TAB>  34k
+noremap  [sd<TAB>  35k
+noremap  [sh<TAB>  36k
+noremap  [sn<TAB>  37k
+noremap  [se<TAB>  38k
+noremap  [si<TAB>  39k
+noremap  [to<TAB>  40k
+noremap  [ta<TAB>  41k
+noremap  [tr<TAB>  42k
+noremap  [ts<TAB>  43k
+noremap  [tt<TAB>  44k
+noremap  [td<TAB>  45k
+noremap  [th<TAB>  46k
+noremap  [tn<TAB>  47k
+noremap  [te<TAB>  48k
+noremap  [ti<TAB>  49k
+noremap  [do<TAB>  50k
+noremap  [da<TAB>  51k
+noremap  [dr<TAB>  52k
+noremap  [ds<TAB>  53k
+noremap  [dt<TAB>  54k
+noremap  [dd<TAB>  55k
+noremap  [dh<TAB>  56k
+noremap  [dn<TAB>  57k
+noremap  [de<TAB>  58k
+noremap  [di<TAB>  59k
+noremap  [ho<TAB>  60k
+noremap  [ha<TAB>  61k
+noremap  [hr<TAB>  62k
+noremap  [hs<TAB>  63k
+noremap  [ht<TAB>  64k
+noremap  [hd<TAB>  65k
+noremap  [hh<TAB>  66k
+noremap  [hn<TAB>  67k
+noremap  [he<TAB>  68k
+noremap  [hi<TAB>  69k
+noremap  [no<TAB>  70k
+noremap  [na<TAB>  71k
+noremap  [nr<TAB>  72k
+noremap  [ns<TAB>  73k
+noremap  [nt<TAB>  74k
+noremap  [nd<TAB>  75k
+noremap  [nh<TAB>  76k
+noremap  [nn<TAB>  77k
+noremap  [ne<TAB>  78k
+noremap  [ni<TAB>  79k
+noremap  [eo<TAB>  80k
+noremap  [ea<TAB>  81k
+noremap  [er<TAB>  82k
+noremap  [es<TAB>  83k
+noremap  [et<TAB>  84k
+noremap  [ed<TAB>  85k
+noremap  [eh<TAB>  86k
+noremap  [en<TAB>  87k
+noremap  [ee<TAB>  88k
+noremap  [ei<TAB>  89k
+noremap  [io<TAB>  90k
+noremap  [ia<TAB>  91k
+noremap  [ir<TAB>  92k
+noremap  [is<TAB>  93k
+noremap  [it<TAB>  94k
+noremap  [id<TAB>  95k
+noremap  [ih<TAB>  96k
+noremap  [in<TAB>  97k
+noremap  [ie<TAB>  98k
+noremap  [ii<TAB>  99k
+noremap [aoo<TAB> 100k
+noremap [aoa<TAB> 101k
+noremap [aor<TAB> 102k
+noremap [aos<TAB> 103k
+noremap [aot<TAB> 104k
+noremap [aod<TAB> 105k
+noremap [aoh<TAB> 106k
+noremap [aon<TAB> 107k
+noremap [aoe<TAB> 108k
+noremap [aoi<TAB> 109k
+noremap [aao<TAB> 110k
+noremap [aaa<TAB> 111k
+noremap [aar<TAB> 112k
+noremap [aas<TAB> 113k
+noremap [aat<TAB> 114k
+noremap [aad<TAB> 115k
+noremap [aah<TAB> 116k
+noremap [aan<TAB> 117k
+noremap [aae<TAB> 118k
+noremap [aai<TAB> 119k
+noremap [aro<TAB> 120k
+noremap [ara<TAB> 121k
+noremap [arr<TAB> 122k
+noremap [ars<TAB> 123k
+noremap [art<TAB> 124k
+noremap [ard<TAB> 125k
+noremap [arh<TAB> 126k
+noremap [arn<TAB> 127k
+noremap [are<TAB> 128k
+noremap [ari<TAB> 129k
+noremap [aso<TAB> 130k
+noremap [asa<TAB> 131k
+noremap [asr<TAB> 132k
+noremap [ass<TAB> 133k
+noremap [ast<TAB> 134k
+noremap [asd<TAB> 135k
+noremap [ash<TAB> 136k
+noremap [asn<TAB> 137k
+noremap [ase<TAB> 138k
+noremap [asi<TAB> 139k
+noremap [ato<TAB> 140k
+noremap [ata<TAB> 141k
+noremap [atr<TAB> 142k
+noremap [ats<TAB> 143k
+noremap [att<TAB> 144k
+noremap [atd<TAB> 145k
+noremap [ath<TAB> 146k
+noremap [atn<TAB> 147k
+noremap [ate<TAB> 148k
+noremap [ati<TAB> 149k
+noremap [ado<TAB> 150k
+noremap [ada<TAB> 151k
+noremap [adr<TAB> 152k
+noremap [ads<TAB> 153k
+noremap [adt<TAB> 154k
+noremap [add<TAB> 155k
+noremap [adh<TAB> 156k
+noremap [adn<TAB> 157k
+noremap [ade<TAB> 158k
+noremap [adi<TAB> 159k
+noremap [aho<TAB> 160k
+noremap [aha<TAB> 161k
+noremap [ahr<TAB> 162k
+noremap [ahs<TAB> 163k
+noremap [aht<TAB> 164k
+noremap [ahd<TAB> 165k
+noremap [ahh<TAB> 166k
+noremap [ahn<TAB> 167k
+noremap [ahe<TAB> 168k
+noremap [ahi<TAB> 169k
+noremap [ano<TAB> 170k
+noremap [ana<TAB> 171k
+noremap [anr<TAB> 172k
+noremap [ans<TAB> 173k
+noremap [ant<TAB> 174k
+noremap [and<TAB> 175k
+noremap [anh<TAB> 176k
+noremap [ann<TAB> 177k
+noremap [ane<TAB> 178k
+noremap [ani<TAB> 179k
+noremap [aeo<TAB> 180k
+noremap [aea<TAB> 181k
+noremap [aer<TAB> 182k
+noremap [aes<TAB> 183k
+noremap [aet<TAB> 184k
+noremap [aed<TAB> 185k
+noremap [aeh<TAB> 186k
+noremap [aen<TAB> 187k
+noremap [aee<TAB> 188k
+noremap [aei<TAB> 189k
+noremap [aio<TAB> 190k
+noremap [aia<TAB> 191k
+noremap [air<TAB> 192k
+noremap [ais<TAB> 193k
+noremap [ait<TAB> 194k
+noremap [aid<TAB> 195k
+noremap [aih<TAB> 196k
+noremap [ain<TAB> 197k
+noremap [aie<TAB> 198k
+noremap [aii<TAB> 199k
+
+noremap   'a<TAB>   1j 
+noremap   's<TAB>   2j 
+noremap   'd<TAB>   3j 
+noremap   'f<TAB>   4j 
+noremap   'g<TAB>   5j 
+noremap   'h<TAB>   6j 
+noremap   'j<TAB>   7j 
+noremap   'k<TAB>   8j 
+noremap   'l<TAB>   9j 
+noremap  'a<LEADER><TAB>  10j
+noremap  'aa<TAB>  11j
+noremap  'as<TAB>  12j
+noremap  'ad<TAB>  13j
+noremap  'af<TAB>  14j
+noremap  'ag<TAB>  15j
+noremap  'ah<TAB>  16j
+noremap  'aj<TAB>  17j
+noremap  'ak<TAB>  18j
+noremap  'al<TAB>  19j
+noremap  'r<LEADER><TAB>  20j
+noremap  'ra<TAB>  21j
+noremap  'rr<TAB>  22j
+noremap  'rs<TAB>  23j
+noremap  'rt<TAB>  24j
+noremap  'rd<TAB>  25j
+noremap  'rh<TAB>  26j
+noremap  'rn<TAB>  27j
+noremap  're<TAB>  28j
+noremap  'ri<TAB>  29j
+noremap  'so<TAB>  30j
+noremap  'sa<TAB>  31j
+noremap  'sr<TAB>  32j
+noremap  'ss<TAB>  33j
+noremap  'st<TAB>  34j
+noremap  'sd<TAB>  35j
+noremap  'sh<TAB>  36j
+noremap  'sn<TAB>  37j
+noremap  'se<TAB>  38j
+noremap  'si<TAB>  39j
+noremap  'to<TAB>  40j
+noremap  'ta<TAB>  41j
+noremap  'tr<TAB>  42j
+noremap  'ts<TAB>  43j
+noremap  'tt<TAB>  44j
+noremap  'td<TAB>  45j
+noremap  'th<TAB>  46j
+noremap  'tn<TAB>  47j
+noremap  'te<TAB>  48j
+noremap  'ti<TAB>  49j
+noremap  'do<TAB>  50j
+noremap  'da<TAB>  51j
+noremap  'dr<TAB>  52j
+noremap  'ds<TAB>  53j
+noremap  'dt<TAB>  54j
+noremap  'dd<TAB>  55j
+noremap  'dh<TAB>  56j
+noremap  'dn<TAB>  57j
+noremap  'de<TAB>  58j
+noremap  'di<TAB>  59j
+noremap  'ho<TAB>  60j
+noremap  'ha<TAB>  61j
+noremap  'hr<TAB>  62j
+noremap  'hs<TAB>  63j
+noremap  'ht<TAB>  64j
+noremap  'hd<TAB>  65j
+noremap  'hh<TAB>  66j
+noremap  'hn<TAB>  67j
+noremap  'he<TAB>  68j
+noremap  'hi<TAB>  69j
+noremap  'no<TAB>  70j
+noremap  'na<TAB>  71j
+noremap  'nr<TAB>  72j
+noremap  'ns<TAB>  73j
+noremap  'nt<TAB>  74j
+noremap  'nd<TAB>  75j
+noremap  'nh<TAB>  76j
+noremap  'nn<TAB>  77j
+noremap  'ne<TAB>  78j
+noremap  'ni<TAB>  79j
+noremap  'eo<TAB>  80j
+noremap  'ea<TAB>  81j
+noremap  'er<TAB>  82j
+noremap  'es<TAB>  83j
+noremap  'et<TAB>  84j
+noremap  'ed<TAB>  85j
+noremap  'eh<TAB>  86j
+noremap  'en<TAB>  87j
+noremap  'ee<TAB>  88j
+noremap  'ei<TAB>  89j
+noremap  'io<TAB>  90j
+noremap  'ia<TAB>  91j
+noremap  'ir<TAB>  92j
+noremap  'is<TAB>  93j
+noremap  'it<TAB>  94j
+noremap  'id<TAB>  95j
+noremap  'ih<TAB>  96j
+noremap  'in<TAB>  97j
+noremap  'ie<TAB>  98j
+noremap  'ii<TAB>  99j
+noremap 'aoo<TAB> 100j
+noremap 'aoa<TAB> 101j
+noremap 'aor<TAB> 102j
+noremap 'aos<TAB> 103j
+noremap 'aot<TAB> 104j
+noremap 'aod<TAB> 105j
+noremap 'aoh<TAB> 106j
+noremap 'aon<TAB> 107j
+noremap 'aoe<TAB> 108j
+noremap 'aoi<TAB> 109j
+noremap 'aao<TAB> 110j
+noremap 'aaa<TAB> 111j
+noremap 'aar<TAB> 112j
+noremap 'aas<TAB> 113j
+noremap 'aat<TAB> 114j
+noremap 'aad<TAB> 115j
+noremap 'aah<TAB> 116j
+noremap 'aan<TAB> 117j
+noremap 'aae<TAB> 118j
+noremap 'aai<TAB> 119j
+noremap 'aro<TAB> 120j
+noremap 'ara<TAB> 121j
+noremap 'arr<TAB> 122j
+noremap 'ars<TAB> 123j
+noremap 'art<TAB> 124j
+noremap 'ard<TAB> 125j
+noremap 'arh<TAB> 126j
+noremap 'arn<TAB> 127j
+noremap 'are<TAB> 128j
+noremap 'ari<TAB> 129j
+noremap 'aso<TAB> 130j
+noremap 'asa<TAB> 131j
+noremap 'asr<TAB> 132j
+noremap 'ass<TAB> 133j
+noremap 'ast<TAB> 134j
+noremap 'asd<TAB> 135j
+noremap 'ash<TAB> 136j
+noremap 'asn<TAB> 137j
+noremap 'ase<TAB> 138j
+noremap 'asi<TAB> 139j
+noremap 'ato<TAB> 140j
+noremap 'ata<TAB> 141j
+noremap 'atr<TAB> 142j
+noremap 'ats<TAB> 143j
+noremap 'att<TAB> 144j
+noremap 'atd<TAB> 145j
+noremap 'ath<TAB> 146j
+noremap 'atn<TAB> 147j
+noremap 'ate<TAB> 148j
+noremap 'ati<TAB> 149j
+noremap 'ado<TAB> 150j
+noremap 'ada<TAB> 151j
+noremap 'adr<TAB> 152j
+noremap 'ads<TAB> 153j
+noremap 'adt<TAB> 154j
+noremap 'add<TAB> 155j
+noremap 'adh<TAB> 156j
+noremap 'adn<TAB> 157j
+noremap 'ade<TAB> 158j
+noremap 'adi<TAB> 159j
+noremap 'aho<TAB> 160j
+noremap 'aha<TAB> 161j
+noremap 'ahr<TAB> 162j
+noremap 'ahs<TAB> 163j
+noremap 'aht<TAB> 164j
+noremap 'ahd<TAB> 165j
+noremap 'ahh<TAB> 166j
+noremap 'ahn<TAB> 167j
+noremap 'ahe<TAB> 168j
+noremap 'ahi<TAB> 169j
+noremap 'ano<TAB> 170j
+noremap 'ana<TAB> 171j
+noremap 'anr<TAB> 172j
+noremap 'ans<TAB> 173j
+noremap 'ant<TAB> 174j
+noremap 'and<TAB> 175j
+noremap 'anh<TAB> 176j
+noremap 'ann<TAB> 177j
+noremap 'ane<TAB> 178j
+noremap 'ani<TAB> 179j
+noremap 'aeo<TAB> 180j
+noremap 'aea<TAB> 181j
+noremap 'aer<TAB> 182j
+noremap 'aes<TAB> 183j
+noremap 'aet<TAB> 184j
+noremap 'aed<TAB> 185j
+noremap 'aeh<TAB> 186j
+noremap 'aen<TAB> 187j
+noremap 'aee<TAB> 188j
+noremap 'aei<TAB> 189j
+noremap 'aio<TAB> 190j
+noremap 'aia<TAB> 191j
+noremap 'air<TAB> 192j
+noremap 'ais<TAB> 193j
+noremap 'ait<TAB> 194j
+noremap 'aid<TAB> 195j
+noremap 'aih<TAB> 196j
+noremap 'ain<TAB> 197j
+noremap 'aie<TAB> 198j
+noremap 'aii<TAB> 199j
+
