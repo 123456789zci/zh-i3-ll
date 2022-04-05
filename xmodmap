@@ -1,0 +1,9 @@
+clear shift
+clear lock
+keycode 66 =Escape NoSymbol Escape
+keycode 9 =Caps_Lock NoSymbol Caps_Lock
+keycode 65 =Shift_L NoSymbol Shift_L
+keycode 50 =space NoSymbol space
+keycode 23 =Return NoSymbol Return
+keycode 36 =Tab NoSymbol Tab
+keycode 62=BackSpace NoSymbol BackSpace
